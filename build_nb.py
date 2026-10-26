@@ -346,19 +346,27 @@ xkcd(1597, "git", "Git",
      "Everyone feels like this about git at first. Today you only need six commands, and this notebook tells you each one.")
 code("""
 %%bash
-# Catch-up: clone (your fork if it exists, otherwise upstream) and make the branch
+# Catch-up: clone, point origin at your fork and upstream at the workshop repo, make the branch
 cd "$WORK"
+FORK="https://github.com/$ME/dune-tech-phlex-sandbox.git"
+UP="https://github.com/nuRiceLab/dune-tech-phlex-sandbox.git"
+if GIT_TERMINAL_PROMPT=0 git ls-remote "$FORK" >/dev/null 2>&1; then HAVE_FORK=yes; else HAVE_FORK=no; fi
 if [ ! -d dune-tech-phlex-sandbox ]; then
-  GIT_TERMINAL_PROMPT=0 git clone --recurse-submodules "https://github.com/$ME/dune-tech-phlex-sandbox.git" \\
-    || git clone https://github.com/nuRiceLab/dune-tech-phlex-sandbox.git
+  if [ $HAVE_FORK = yes ]; then SRC_URL="$FORK"; else SRC_URL="$UP"; fi
+  git clone --quiet --recurse-submodules "$SRC_URL"
 fi
 cd dune-tech-phlex-sandbox
-git submodule update --init
-git remote get-url upstream >/dev/null 2>&1 \\
-  || git remote add upstream https://github.com/nuRiceLab/dune-tech-phlex-sandbox.git
+git submodule update --init --quiet
+git remote set-url origin "$FORK"   # you push to your fork
+git remote get-url upstream >/dev/null 2>&1 || git remote add upstream "$UP"
 git switch -c my-first-contribution 2>/dev/null || git switch my-first-contribution
 git remote -v
-git status
+git status --short --branch
+if [ $HAVE_FORK = no ]; then
+  echo
+  echo "⚠️  No fork at github.com/$ME/dune-tech-phlex-sandbox yet. That's fine for now: the code came"
+  echo "    from the workshop repo. Fork it on GitHub before Part 5, when you push."
+fi
 """)
 
 # ---------------------------------------------------------------- part 2
