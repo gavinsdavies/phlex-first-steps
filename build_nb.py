@@ -51,10 +51,10 @@ You don't need to know any of this already. Later sessions go deeper into Phlex 
 migration and its tests). This one is about getting comfortable.
 
 > 📦 **The code you'll use today** is **[nuRiceLab/phlex-india-sandbox](https://github.com/nuRiceLab/phlex-india-sandbox)**,
-> a **trimmed copy** of the official **[Framework-R-D/phlex-examples](https://github.com/Framework-R-D/phlex-examples)**.
-> We kept only the simplest examples, added a small CMake practice project, and made it a place
-> where you're allowed to push and practise. At the end you'll move on to the official repository,
-> which has much more.
+> a practice repository that includes the official **[Framework-R-D/phlex-examples](https://github.com/Framework-R-D/phlex-examples)**
+> in its `phlex-examples/` folder. You can read and build the official code there, but you can't
+> change it. The sandbox adds a small CMake practice project and a place where you're allowed to
+> push and practise. At the end you'll move on to the official repository itself.
 
 ## You don't have to finish everything
 
@@ -122,16 +122,17 @@ from pathlib import Path
 
 WORK = Path.home() / "phlex-work"
 SRC = WORK / "phlex-india-sandbox"
+EX = SRC / "phlex-examples"  # the official examples, a submodule
 BUILD = WORK / "build-sandbox"
 WARM = WORK / "build-warmup"
 MINE = SRC / "contributions" / ME
 WORK.mkdir(exist_ok=True)
 
-for name, value in [("ME", ME), ("WORK", WORK), ("SRC", SRC), ("BUILD", BUILD), ("WARM", WARM), ("MINE", MINE)]:
+for name, value in [("ME", ME), ("WORK", WORK), ("SRC", SRC), ("EX", EX), ("BUILD", BUILD), ("WARM", WARM), ("MINE", MINE)]:
     os.environ[name] = str(value)
 
 # phlex finds C++ plugins through PHLEX_PLUGIN_PATH and Python algorithms through PYTHONPATH
-for var, path in [("PHLEX_PLUGIN_PATH", BUILD), ("PYTHONPATH", SRC)]:
+for var, path in [("PHLEX_PLUGIN_PATH", BUILD), ("PYTHONPATH", EX)]:
     entries = [e for e in os.environ.get(var, "").split(":") if e]
     if str(path) not in entries:
         os.environ[var] = ":".join([str(path)] + entries)
@@ -246,9 +247,10 @@ md("""
 # Part 1: Getting the code with GitHub (15 min)
 
 Today's code is in a practice repository, **[nuRiceLab/phlex-india-sandbox](https://github.com/nuRiceLab/phlex-india-sandbox)**.
-It's a trimmed copy of the official [phlex-examples](https://github.com/Framework-R-D/phlex-examples),
-made for this workshop, so you can push to it and open pull requests without any risk to the
-real thing.
+It was made for this workshop, so you can push to it and open pull requests without any risk to
+the real thing. The official [phlex-examples](https://github.com/Framework-R-D/phlex-examples) sits
+inside it, in `phlex-examples/`, as a **submodule**: a pointer to one exact commit of another
+repository. You get the real code, and nothing you do here can change it.
 
 Three copies of the code are involved:
 
@@ -279,10 +281,14 @@ Back in the terminal (put your username in place of `<you>`):
 
 ```bash
 cd ~/phlex-work
-git clone https://github.com/<you>/phlex-india-sandbox.git
+git clone --recurse-submodules https://github.com/<you>/phlex-india-sandbox.git
 cd phlex-india-sandbox
 ls
+ls phlex-examples
 ```
+
+`--recurse-submodules` also fetches the code in `phlex-examples/`. If you forgot it, that folder
+is empty; fix it with `git submodule update --init`.
 
 ## 1.3 Look around
 
@@ -291,9 +297,10 @@ git log --oneline -5     # the last five commits: a short ID (hash) and a messag
 git remote -v            # where this clone came from ("origin" = your fork)
 ```
 
-The history is short: one commit that copied and trimmed phlex-examples, and one that added the
-workshop parts. Read the first one in full with `git show --stat HEAD~1`: a good commit message
-says where something came from and why. The official repository has hundreds of commits.
+The history is short. Read one commit in full with `git show --stat HEAD`: a good commit message
+says what changed and why. Then compare with the official repository:
+`git -C phlex-examples log --oneline | wc -l` counts its commits. `git submodule status` shows the
+exact commit the sandbox points at.
 
 Tell your clone about upstream too, so you can get updates later:
 
@@ -333,10 +340,11 @@ code("""
 # Catch-up: clone (your fork if it exists, otherwise upstream) and make the branch
 cd "$WORK"
 if [ ! -d phlex-india-sandbox ]; then
-  GIT_TERMINAL_PROMPT=0 git clone "https://github.com/$ME/phlex-india-sandbox.git" \\
+  GIT_TERMINAL_PROMPT=0 git clone --recurse-submodules "https://github.com/$ME/phlex-india-sandbox.git" \\
     || git clone https://github.com/nuRiceLab/phlex-india-sandbox.git
 fi
 cd phlex-india-sandbox
+git submodule update --init
 git remote get-url upstream >/dev/null 2>&1 \\
   || git remote add upstream https://github.com/nuRiceLab/phlex-india-sandbox.git
 git switch -c my-first-contribution 2>/dev/null || git switch my-first-contribution
@@ -532,8 +540,8 @@ terminal, inside the container:
 ```bash
 cd ~/phlex-work/build-sandbox
 export PHLEX_PLUGIN_PATH=$PWD:$PHLEX_PLUGIN_PATH
-export PYTHONPATH=$HOME/phlex-work/phlex-india-sandbox:$PYTHONPATH
-less ../phlex-india-sandbox/test-cpp-workflow.jsonnet
+export PYTHONPATH=$HOME/phlex-work/phlex-india-sandbox/phlex-examples:$PYTHONPATH
+less ../phlex-india-sandbox/phlex-examples/test-cpp-workflow.jsonnet
 ```
 
 These `export` lines only last for this terminal. Put them in your notes.
@@ -565,7 +573,7 @@ flowchart LR
 ## Run it
 
 ```bash
-phlex -c ../phlex-india-sandbox/test-cpp-workflow.jsonnet --stage examples
+phlex -c ../phlex-india-sandbox/phlex-examples/test-cpp-workflow.jsonnet --stage examples
 ```
 
 `--stage` names this processing pass. Current Phlex requires it.
@@ -600,8 +608,8 @@ Phlex can run Python functions as algorithms. Have a look at `subtract.py`; it's
 function with type hints:
 
 ```bash
-less ../phlex-india-sandbox/subtract.py
-phlex -c ../phlex-india-sandbox/test-py-workflow.jsonnet --stage examples
+less ../phlex-india-sandbox/phlex-examples/subtract.py
+phlex -c ../phlex-india-sandbox/phlex-examples/test-py-workflow.jsonnet --stage examples
 ```
 
 No build was needed. phlex found `subtract.py` through `PYTHONPATH` and matched its `i: int, j: int`
@@ -618,9 +626,9 @@ code("""
 %%bash
 # Catch-up: run both example jobs
 cd "$BUILD"
-phlex -c "$SRC/test-cpp-workflow.jsonnet" --stage examples 2>&1 | tail -4
+phlex -c "$EX/test-cpp-workflow.jsonnet" --stage examples 2>&1 | tail -4
 ls -l output.root
-phlex -c "$SRC/test-py-workflow.jsonnet" --stage examples 2>&1 | tail -3
+phlex -c "$EX/test-py-workflow.jsonnet" --stage examples 2>&1 | tail -3
 """)
 
 # ---------------------------------------------------------------- part 4
@@ -745,7 +753,7 @@ cp contributions/_stretch/* contributions/<you>/
 less contributions/<you>/multiply_and_verify.cpp
 ```
 
-Read the `.cpp` file next to `add_and_verify.cpp`: a **transform** with two inputs and one
+Read the `.cpp` file next to `phlex-examples/add_and_verify.cpp`: a **transform** with two inputs and one
 output, and an **observer** that reads the transform's output. The small `CMakeLists.txt` names
 your plugin after your folder, so it's `multiply_<you>` (a `-` in your username becomes `_`).
 
@@ -906,11 +914,11 @@ md("""
 
 ## Move on to the official repository
 
-Today you used a trimmed copy. The real one is
-**[Framework-R-D/phlex-examples](https://github.com/Framework-R-D/phlex-examples)**. It has
-everything we left out: an unfold example (one product split into many), the GausHitFinder
-migration from LArSoft in four designs with tests, and a branch for each Phlex release. Clone the
-branch that matches your `phlex --version`, next to your sandbox:
+Today you built a few files from the `phlex-examples/` submodule. The rest of it is already on your
+disk: an unfold example (one product split into many) and the GausHitFinder migration from LArSoft
+in four designs with tests. To work on it for real, clone the official
+**[Framework-R-D/phlex-examples](https://github.com/Framework-R-D/phlex-examples)** on its own, on
+the branch that matches your `phlex --version`, next to your sandbox:
 
 ```bash
 cd ~/phlex-work
