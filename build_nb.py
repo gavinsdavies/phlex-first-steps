@@ -52,13 +52,23 @@ def md(text):
 
 CATCH_UP_NOTE = ("> ⏭️ **Catch-up: skip this if the commands above worked for you.** Run it only if you "
                  "fell behind or a step failed. It does the same steps for you.")
+# Catch-up cells that build or run phlex need the container. They get it from the notebook's
+# phaindia apptainer kernel, not from a terminal, so say so and stop early on the wrong kernel.
+CATCH_UP_NOTE_IN = (CATCH_UP_NOTE + " It runs **inside the container** without a terminal, through "
+                    "this notebook's **phaindia apptainer** kernel, so check that kernel is selected (top right).")
+KERNEL_GUARD = ('command -v phlex >/dev/null || { echo "⚠️  phlex not found. Pick the phaindia apptainer '
+                'kernel (top right), then run this cell again."; exit 1; }')
 
 
 def code(text):
     text = text.strip("\n")
     first = next((l for l in text.splitlines() if l.strip() and not l.startswith("%%")), "")
     if first.startswith("# Catch-up"):
-        cells.append(nbf.v4.new_markdown_cell(CATCH_UP_NOTE))
+        if where(text) == IN:
+            cells.append(nbf.v4.new_markdown_cell(CATCH_UP_NOTE_IN))
+            text = text.replace(first + "\n", first + "\n" + KERNEL_GUARD + "\n", 1)
+        else:
+            cells.append(nbf.v4.new_markdown_cell(CATCH_UP_NOTE))
     cells.append(nbf.v4.new_code_cell(text))
 
 
