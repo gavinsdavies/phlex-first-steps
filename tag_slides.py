@@ -6,6 +6,7 @@ Rules, from the first line of each cell:
 - a markdown cell that starts with "# "   -> slide     (a new slide, left to right)
 - a markdown cell that starts with "## "  -> subslide  (a new slide under it, top to bottom)
 - a code cell that is a catch-up or solution cell -> skip (not shown when presenting)
+- the "⏭️ Catch-up" note above a catch-up cell      -> skip
 - everything else                          -> fragment  (appears on the current slide)
 
 The notebook still works as a normal notebook: the tags only change how RISE shows it.
@@ -42,6 +43,8 @@ def first_line(cell):
 def slide_type(cell):
     line = first_line(cell)
     if cell["cell_type"] == "markdown":
+        if line.startswith("> ⏭️"):
+            return "skip"
         if line.startswith("# "):
             return "slide"
         if line.startswith("## "):
