@@ -941,6 +941,31 @@ Phlex developers want to hear.
   mock neutrino analysis with plots.
 - **To stay up to date with upstream:** `git fetch upstream` and `git merge upstream/main`.
 
+## Afterwards: keep your notes in git
+
+Your `NOTES.md` is the most useful file you made today. Keep it, and keep adding to it. Git is a
+good home for it: every commit is a dated entry, and `git log` becomes a diary of what you learned.
+Do this on your own computer after the workshop, not on the hub.
+
+1. Download it: in the JupyterLab file browser, right-click `phlex-work/NOTES.md` → **Download**.
+2. Give it its own folder and make that folder a repository. Keep it outside any other clone, so
+   one repository never ends up inside another:
+   ```bash
+   mkdir ~/notes && mv ~/Downloads/NOTES.md ~/notes/
+   cd ~/notes
+   git init
+   git add NOTES.md
+   git commit -m "Notes from the Phlex workshop, day 1"
+   ```
+3. **Commit often.** At the end of every work session: `git commit -am "What I got working today"`.
+4. Optional: on GitHub, click **New repository**, choose **Private**, and don't add a README. Then
+   follow the "push an existing repository" lines GitHub shows you. A private repository needs a
+   login that can see private repositories: `gh auth login` is the easiest, and a classic token
+   with only `public_repo` will be refused.
+
+Never commit a token or a password, even to a private repository. If you do, revoke the token on
+GitHub straight away: deleting the line doesn't remove it from the history.
+
 ## Today, in one word
 
 Once your pull request is merged, the "One word for today" in your README joins everyone else's.
