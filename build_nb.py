@@ -10,6 +10,7 @@ import pathlib
 import sys
 
 import nbformat as nbf
+from tag_slides import tag
 
 cells = []
 
@@ -1003,5 +1004,6 @@ nb.metadata["kernelspec"] = {"name": "python3", "display_name": "Python 3", "lan
 nb.metadata["language_info"] = {"name": "python"}
 nbf.validate(nb)
 out = sys.argv[1] if len(sys.argv) > 1 else pathlib.Path(__file__).with_name("phlex-first-steps.ipynb")
+tag(nb)  # RISE slide tags, see tag_slides.py
 nbf.write(nb, out)
 print(f"{len(cells)} cells -> {out}")
