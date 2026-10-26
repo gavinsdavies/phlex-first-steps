@@ -549,9 +549,9 @@ There are two kinds of `.so` here, as in the warm-up:
 
 - **SHARED libraries** (`libmy_add.so`, `libmy_geometry.so`): ordinary "experiment code" that
   knows nothing about Phlex, like `libgreet.so`.
-- **Plugins**, built as `MODULE` (`add_and_verify.so`, `numbers_source.so`, …): code phlex loads
-  while it runs. When a configuration says `cpp: 'add_and_verify'`, phlex looks for
-  `add_and_verify.so`.
+- **Plugins**, built as `MODULE` (`libadd_and_verify.so`, `libnumbers_source.so`, …): code phlex loads
+  while it runs. When a configuration says `cpp: 'add_and_verify'`, phlex adds `lib` and `.so`
+  and looks for `libadd_and_verify.so` on `PHLEX_PLUGIN_PATH`.
 
 > 🧭 **Analogy:** a plugin is a game cartridge. The console (phlex) is already built, and it
 > loads whichever cartridges the configuration asks for.
@@ -871,7 +871,7 @@ grep -q multiply_cpp "$MINE/my-workflow.jsonnet" || \\
   sed -i "s|    // FORM writes these products|    multiply_cpp: {\\n      cpp: '$plugin',\\n      layer: 'spill',\\n    },\\n    // FORM writes these products|" "$MINE/my-workflow.jsonnet"
 cd "$BUILD"
 cmake . | grep -E "contributions/|rror"   # configure again: the new folder is found only now
-cmake --build . -j 4 2>&1 | grep -E "error" ; ls -l "$plugin.so"
+cmake --build . -j 4 2>&1 | grep -E "error" ; ls -l "lib$plugin.so"
 phlex -c "$MINE/my-workflow.jsonnet" --stage "$ME" 2>&1 | tail -4
 cd "$SRC"
 git add "contributions/$ME"
