@@ -9,14 +9,45 @@ Edit the cells here, not in the notebook, then regenerate (needs nbformat):
 import pathlib
 import sys
 
+import re
+
 import nbformat as nbf
 from tag_slides import tag
 
 cells = []
 
 
+# Every terminal block gets a label that says where to run it. The container matters: phlex,
+# cmake and make only exist inside it, and `apptainer shell` only works from outside it.
+IN = "💻 **Terminal, inside the container** (prompt `Apptainer>`)"
+OUT = "💻 **Terminal, outside the container** (prompt `jupyter-you@dune-tech`)"
+ANY = "💻 **Terminal**, inside or outside the container"
+NEEDS_CONTAINER = {"cmake", "make", "phlex", "ctest"}
+
+
+def where(block):
+    """Pick the label for one ```bash block from the commands in it."""
+    for line in block.splitlines():
+        words = line.split()
+        if not words or words[0].startswith("#"):
+            continue
+        if words[:2] == ["apptainer", "shell"]:
+            return OUT
+        # phlex looks these up when it runs, and --cleanenv drops them on the way into the container
+        if words[0] in NEEDS_CONTAINER or line.startswith(("export PHLEX_PLUGIN_PATH", "export PYTHONPATH")):
+            return IN
+    return ANY
+
+
+def label_terminal_blocks(text):
+    # Only blocks at the start of a line: an indented block sits in a list (the take-home steps
+    # at the end run on the student's own computer, so they get no hub label)
+    return re.sub(r"\n?^```bash\n(.*?)^```",
+                  lambda m: f"\n\n{where(m.group(1))}\n```bash\n{m.group(1)}```", text, flags=re.S | re.M)
+
+
 def md(text):
-    cells.append(nbf.v4.new_markdown_cell(text.strip("\n")))
+    cells.append(nbf.v4.new_markdown_cell(label_terminal_blocks(text.strip("\n")).replace("\n\n\n", "\n\n")))
 
 
 def code(text):
@@ -92,6 +123,14 @@ echo "type me in the terminal"
 ```
 
 and tells you what you should see. Typing them is slower than clicking, but it's how they stick.
+
+The line above each box says **where** to type it:
+
+| Label | Where |
+|---|---|
+| 💻 **Terminal, inside the container** | After `apptainer shell`, at the `Apptainer>` prompt. phlex, cmake and make only exist in there |
+| 💻 **Terminal, outside the container** | At the `jupyter-you@dune-tech` prompt, before you step in |
+| 💻 **Terminal**, inside or outside | Either works: files, folders and git |
 
 If you fall behind, each step has a **catch-up cell** (a code cell marked `# Catch-up`).
 Running it does the step for you. Use them freely; nobody's marking this.
@@ -418,7 +457,7 @@ cat CMakeLists.txt
 | `add_executable(hello hello.cpp)` | Makes a target `hello`: a program |
 | `target_link_libraries(hello PRIVATE greet)` | `hello` uses `greet`, so connect them |
 
-Now configure, build and run. In the terminal, **inside the container**:
+Now configure, build and run:
 
 ```bash
 mkdir -p ~/phlex-work/build-warmup
@@ -466,7 +505,7 @@ cmake "$SRC/cmake-warmup" > /dev/null && cmake --build . | tail -2
 md("""
 ## 2.2 Build the Phlex code (15 min)
 
-The Phlex examples are the same idea with more targets. In the terminal, **inside the container**:
+The Phlex examples are the same idea with more targets:
 
 ```bash
 mkdir -p ~/phlex-work/build-sandbox
@@ -552,8 +591,7 @@ data allow. You don't write any threading code.
 
 ## Read a configuration
 
-Before you run anything, set two paths so phlex can find the plugins and the Python code. In the
-terminal, inside the container:
+Before you run anything, set two paths so phlex can find the plugins and the Python code:
 
 ```bash
 cd ~/phlex-work/build-sandbox
@@ -658,7 +696,7 @@ Now make something of your own. In this repository, each person works only in th
 
 ## 4.1 Copy the template
 
-In the terminal (git commands can be inside or outside the container):
+In the terminal:
 
 ```bash
 cd ~/phlex-work/dune-tech-phlex-sandbox
