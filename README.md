@@ -26,7 +26,8 @@ python3 build_nb.py
 
 The cell IDs are fixed, so the same script gives a byte-identical notebook and the diffs stay small.
 
-## Credits
+## Credits and license
 
-Notebooks by Gavin S. Davies (University of Mississippi). The comics in `figures/xkcd/` are by
-Randall Munroe, [xkcd.com](https://xkcd.com), under CC BY-NC 2.5.
+Notebooks by Gavin S. Davies (University of Mississippi). The notebooks and `build_nb.py` are under
+the Apache License 2.0 (see `LICENSE`), like other DUNE software. The comics in `figures/xkcd/` are
+not: they are by Randall Munroe, [xkcd.com](https://xkcd.com), under CC BY-NC 2.5.
