@@ -111,14 +111,20 @@ md("""
 ## Before you start: tell the notebook who you are
 
 Choose the **phaindia apptainer** kernel (top right of the notebook, or **Kernel → Change
-Kernel…**). Then put your **GitHub username** in the cell below and run it. The catch-up cells
-use it.
+Kernel…**). Then run the cell below. Your login on this hub is `jupyter-` followed by your
+GitHub username, so the cell works out your **GitHub username** by itself. Check the `ME` line it
+prints. If it's wrong, type your GitHub username into the commented line and run it again. The
+catch-up cells use it.
 """)
 code("""
-ME = "your-github-username"  # <- change this
-
 import os
+import pwd
 from pathlib import Path
+
+# Your hub login is "jupyter-<github-username>"; take the prefix off
+login = pwd.getpwuid(os.getuid()).pw_name
+ME = login.removeprefix("jupyter-") if login.startswith("jupyter-") else "your-github-username"
+# ME = "your-github-username"  # <- only if the line above got it wrong
 
 WORK = Path.home() / "phlex-work"
 SRC = WORK / "dune-tech-phlex-sandbox"
@@ -157,10 +163,13 @@ fashioned, but it's the fastest way to work with code, and every DUNE computer h
 like:
 
 ```
-jovyan@jupyter-you:~$
- └─┬─┘ └────┬────┘ └┬┘
- user     computer  where you are (~ means your home directory)
+jupyter-you@dune-tech:~$
+└────┬────┘ └───┬───┘ ┬
+   user     computer  where you are (~ means your home directory)
 ```
+
+Your user name on the hub is `jupyter-` plus your GitHub username. When GitHub asks for your
+username, give it **without** `jupyter-`.
 
 Type each command below and press Enter. Watch what comes back.
 
