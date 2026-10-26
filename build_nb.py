@@ -833,12 +833,17 @@ Read the `.cpp` file next to `phlex-examples/add_and_verify.cpp`: a **transform*
 output, and an **observer** that reads the transform's output. The small `CMakeLists.txt` names
 your plugin after your folder, so it's `multiply_<you>` (a `-` in your username becomes `_`).
 
-Rebuild. CMake notices the new `CMakeLists.txt` and reconfigures by itself:
+Configure again, then build. CMake only looks for folders with a `CMakeLists.txt` when it
+**configures**, so a plain `cmake --build` would skip your new one and there'd be no plugin:
 
 ```bash
 cd ~/phlex-work/build-sandbox
-cmake --build . -j 4           # look for: contributions/<you>: plugin multiply_<you>
+cmake .                        # configure again; look for: contributions/<you>: plugin multiply_<you>
+cmake --build . -j 4
 ```
+
+Rule of thumb: you changed a `.cpp` file, so build. You added a file or a folder, or changed a
+`CMakeLists.txt`, so configure first.
 
 Add a module to your `my-workflow.jsonnet`, next to `add_cpp`:
 
@@ -865,7 +870,8 @@ plugin="multiply_$(echo "$ME" | sed 's/[^A-Za-z0-9_]/_/g')"
 grep -q multiply_cpp "$MINE/my-workflow.jsonnet" || \\
   sed -i "s|    // FORM writes these products|    multiply_cpp: {\\n      cpp: '$plugin',\\n      layer: 'spill',\\n    },\\n    // FORM writes these products|" "$MINE/my-workflow.jsonnet"
 cd "$BUILD"
-cmake --build . -j 4 2>&1 | grep -E "contributions/|error" ; ls -l "$plugin.so"
+cmake . | grep -E "contributions/|rror"   # configure again: the new folder is found only now
+cmake --build . -j 4 2>&1 | grep -E "error" ; ls -l "$plugin.so"
 phlex -c "$MINE/my-workflow.jsonnet" --stage "$ME" 2>&1 | tail -4
 cd "$SRC"
 git add "contributions/$ME"
