@@ -9,7 +9,7 @@ Two Jupyter notebooks for the hands-on Phlex sessions at the DUNE workshop at II
 | `phlex-examples-tutorial.ipynb` | longer | The deep dive: CMake targets and plugins, unfolds, undoing mistakes with git, a Python observer, and a mock neutrino analysis with plots |
 
 The first-steps notebook works in
-[nuRiceLab/phlex-india-sandbox](https://github.com/nuRiceLab/phlex-india-sandbox), a practice
+[nuRiceLab/dune-tech-phlex-sandbox](https://github.com/nuRiceLab/dune-tech-phlex-sandbox), a practice
 repository that includes the official
 [Framework-R-D/phlex-examples](https://github.com/Framework-R-D/phlex-examples) as a submodule.
 The deep dive clones phlex-examples directly.

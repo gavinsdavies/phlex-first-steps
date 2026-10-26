@@ -50,7 +50,7 @@ the everyday skills that working on DUNE software needs:
 You don't need to know any of this already. Later sessions go deeper into Phlex (the GausHitFinder
 migration and its tests). This one is about getting comfortable.
 
-> 📦 **The code you'll use today** is **[nuRiceLab/phlex-india-sandbox](https://github.com/nuRiceLab/phlex-india-sandbox)**,
+> 📦 **The code you'll use today** is **[nuRiceLab/dune-tech-phlex-sandbox](https://github.com/nuRiceLab/dune-tech-phlex-sandbox)**,
 > a practice repository that includes the official **[Framework-R-D/phlex-examples](https://github.com/Framework-R-D/phlex-examples)**
 > in its `phlex-examples/` folder. You can read and build the official code there, but you can't
 > change it. The sandbox adds a small CMake practice project and a place where you're allowed to
@@ -121,7 +121,7 @@ import os
 from pathlib import Path
 
 WORK = Path.home() / "phlex-work"
-SRC = WORK / "phlex-india-sandbox"
+SRC = WORK / "dune-tech-phlex-sandbox"
 EX = SRC / "phlex-examples"  # the official examples, a submodule
 BUILD = WORK / "build-sandbox"
 WARM = WORK / "build-warmup"
@@ -246,7 +246,7 @@ cat "$WORK/NOTES.md"
 md("""
 # Part 1: Getting the code with GitHub (15 min)
 
-Today's code is in a practice repository, **[nuRiceLab/phlex-india-sandbox](https://github.com/nuRiceLab/phlex-india-sandbox)**.
+Today's code is in a practice repository, **[nuRiceLab/dune-tech-phlex-sandbox](https://github.com/nuRiceLab/dune-tech-phlex-sandbox)**.
 It was made for this workshop, so you can push to it and open pull requests without any risk to
 the real thing. The official [phlex-examples](https://github.com/Framework-R-D/phlex-examples) sits
 inside it, in `phlex-examples/`, as a **submodule**: a pointer to one exact commit of another
@@ -256,9 +256,9 @@ Three copies of the code are involved:
 
 ```mermaid
 flowchart LR
-    U["<b>upstream</b><br/>nuRiceLab/phlex-india-sandbox<br/>(on GitHub)"]
-    F["<b>your fork</b><br/>you/phlex-india-sandbox<br/>(on GitHub)"]
-    C["<b>your clone</b><br/>~/phlex-work/phlex-india-sandbox<br/>(on the hub)"]
+    U["<b>upstream</b><br/>nuRiceLab/dune-tech-phlex-sandbox<br/>(on GitHub)"]
+    F["<b>your fork</b><br/>you/dune-tech-phlex-sandbox<br/>(on GitHub)"]
+    C["<b>your clone</b><br/>~/phlex-work/dune-tech-phlex-sandbox<br/>(on the hub)"]
     U -- "1. Fork (button on GitHub)" --> F
     F -- "2. git clone" --> C
     C -- "3. git push" --> F
@@ -272,8 +272,8 @@ flowchart LR
 
 ## 1.1 Fork it
 
-Log in to GitHub, open https://github.com/nuRiceLab/phlex-india-sandbox and click **Fork** (top
-right), then **Create fork**. You now have `https://github.com/<you>/phlex-india-sandbox`.
+Log in to GitHub, open https://github.com/nuRiceLab/dune-tech-phlex-sandbox and click **Fork** (top
+right), then **Create fork**. You now have `https://github.com/<you>/dune-tech-phlex-sandbox`.
 
 ## 1.2 Clone your fork
 
@@ -281,8 +281,8 @@ Back in the terminal (put your username in place of `<you>`):
 
 ```bash
 cd ~/phlex-work
-git clone --recurse-submodules https://github.com/<you>/phlex-india-sandbox.git
-cd phlex-india-sandbox
+git clone --recurse-submodules https://github.com/<you>/dune-tech-phlex-sandbox.git
+cd dune-tech-phlex-sandbox
 ls
 ls phlex-examples
 ```
@@ -305,7 +305,7 @@ exact commit the sandbox points at.
 Tell your clone about upstream too, so you can get updates later:
 
 ```bash
-git remote add upstream https://github.com/nuRiceLab/phlex-india-sandbox.git
+git remote add upstream https://github.com/nuRiceLab/dune-tech-phlex-sandbox.git
 git remote -v
 ```
 
@@ -339,14 +339,14 @@ code("""
 %%bash
 # Catch-up: clone (your fork if it exists, otherwise upstream) and make the branch
 cd "$WORK"
-if [ ! -d phlex-india-sandbox ]; then
-  GIT_TERMINAL_PROMPT=0 git clone --recurse-submodules "https://github.com/$ME/phlex-india-sandbox.git" \\
-    || git clone https://github.com/nuRiceLab/phlex-india-sandbox.git
+if [ ! -d dune-tech-phlex-sandbox ]; then
+  GIT_TERMINAL_PROMPT=0 git clone --recurse-submodules "https://github.com/$ME/dune-tech-phlex-sandbox.git" \\
+    || git clone https://github.com/nuRiceLab/dune-tech-phlex-sandbox.git
 fi
-cd phlex-india-sandbox
+cd dune-tech-phlex-sandbox
 git submodule update --init
 git remote get-url upstream >/dev/null 2>&1 \\
-  || git remote add upstream https://github.com/nuRiceLab/phlex-india-sandbox.git
+  || git remote add upstream https://github.com/nuRiceLab/dune-tech-phlex-sandbox.git
 git switch -c my-first-contribution 2>/dev/null || git switch my-first-contribution
 git remote -v
 git status
@@ -372,7 +372,7 @@ You always build in a **separate directory**, next to the source and not inside 
 ```
 ~/phlex-work/
 ├── NOTES.md                 <- your notes
-├── phlex-india-sandbox/     <- source code (git tracks this)
+├── dune-tech-phlex-sandbox/     <- source code (git tracks this)
 │   └── cmake-warmup/        <- a tiny practice project
 ├── build-warmup/            <- build products for the warm-up
 └── build-sandbox/           <- build products for the Phlex code (git never sees these)
@@ -388,7 +388,7 @@ Before Phlex, practise on something small: one library (`greet`) and one program
 uses it. Read the recipe first:
 
 ```bash
-cd ~/phlex-work/phlex-india-sandbox/cmake-warmup
+cd ~/phlex-work/dune-tech-phlex-sandbox/cmake-warmup
 ls
 cat CMakeLists.txt
 ```
@@ -405,7 +405,7 @@ Now configure, build and run. In the terminal, **inside the container**:
 ```bash
 mkdir -p ~/phlex-work/build-warmup
 cd ~/phlex-work/build-warmup
-cmake ../phlex-india-sandbox/cmake-warmup    # configure
+cmake ../dune-tech-phlex-sandbox/cmake-warmup    # configure
 cmake --build .                              # build
 ./hello
 ```
@@ -427,7 +427,7 @@ and the rest follow from it.
 When you're done, ask git what you changed, then throw the practice edits away:
 
 ```bash
-cd ~/phlex-work/phlex-india-sandbox
+cd ~/phlex-work/dune-tech-phlex-sandbox
 git status                    # greet.cpp and hello.cpp are "modified"
 git diff                      # exactly what changed
 git restore cmake-warmup      # put both files back as they were
@@ -453,7 +453,7 @@ The Phlex examples are the same idea with more targets. In the terminal, **insid
 ```bash
 mkdir -p ~/phlex-work/build-sandbox
 cd ~/phlex-work/build-sandbox
-cmake ../phlex-india-sandbox       # configure
+cmake ../dune-tech-phlex-sandbox       # configure
 cmake --build . -j 4               # build (4 jobs at once; the hub is shared, so please no more)
 ```
 
@@ -540,8 +540,8 @@ terminal, inside the container:
 ```bash
 cd ~/phlex-work/build-sandbox
 export PHLEX_PLUGIN_PATH=$PWD:$PHLEX_PLUGIN_PATH
-export PYTHONPATH=$HOME/phlex-work/phlex-india-sandbox/phlex-examples:$PYTHONPATH
-less ../phlex-india-sandbox/phlex-examples/test-cpp-workflow.jsonnet
+export PYTHONPATH=$HOME/phlex-work/dune-tech-phlex-sandbox/phlex-examples:$PYTHONPATH
+less ../dune-tech-phlex-sandbox/phlex-examples/test-cpp-workflow.jsonnet
 ```
 
 These `export` lines only last for this terminal. Put them in your notes.
@@ -573,7 +573,7 @@ flowchart LR
 ## Run it
 
 ```bash
-phlex -c ../phlex-india-sandbox/phlex-examples/test-cpp-workflow.jsonnet --stage examples
+phlex -c ../dune-tech-phlex-sandbox/phlex-examples/test-cpp-workflow.jsonnet --stage examples
 ```
 
 `--stage` names this processing pass. Current Phlex requires it.
@@ -608,8 +608,8 @@ Phlex can run Python functions as algorithms. Have a look at `subtract.py`; it's
 function with type hints:
 
 ```bash
-less ../phlex-india-sandbox/phlex-examples/subtract.py
-phlex -c ../phlex-india-sandbox/phlex-examples/test-py-workflow.jsonnet --stage examples
+less ../dune-tech-phlex-sandbox/phlex-examples/subtract.py
+phlex -c ../dune-tech-phlex-sandbox/phlex-examples/test-py-workflow.jsonnet --stage examples
 ```
 
 No build was needed. phlex found `subtract.py` through `PYTHONPATH` and matched its `i: int, j: int`
@@ -643,7 +643,7 @@ Now make something of your own. In this repository, each person works only in th
 In the terminal (git commands can be inside or outside the container):
 
 ```bash
-cd ~/phlex-work/phlex-india-sandbox
+cd ~/phlex-work/dune-tech-phlex-sandbox
 cp -r contributions/_template contributions/<you>
 ls contributions/<you>
 ```
@@ -663,7 +663,7 @@ configuration.
 
 ```bash
 cd ~/phlex-work/build-sandbox
-phlex -c ../phlex-india-sandbox/contributions/<you>/my-workflow.jsonnet --stage <you>
+phlex -c ../dune-tech-phlex-sandbox/contributions/<you>/my-workflow.jsonnet --stage <you>
 ```
 
 Check that `Processed layers:` now says `spill: 20`.
@@ -701,7 +701,7 @@ the README. That's normal.
 Ask git what it sees:
 
 ```bash
-cd ~/phlex-work/phlex-india-sandbox
+cd ~/phlex-work/dune-tech-phlex-sandbox
 git status
 ```
 
@@ -748,7 +748,7 @@ If you have time, add a C++ transform that multiplies `i` by `j`, with an observ
 answer. Copy the two files from `_stretch`:
 
 ```bash
-cd ~/phlex-work/phlex-india-sandbox
+cd ~/phlex-work/dune-tech-phlex-sandbox
 cp contributions/_stretch/* contributions/<you>/
 less contributions/<you>/multiply_and_verify.cpp
 ```
@@ -817,7 +817,7 @@ GitHub needs to know it's you. It doesn't accept your password from the terminal
 Then:
 
 ```bash
-cd ~/phlex-work/phlex-india-sandbox
+cd ~/phlex-work/dune-tech-phlex-sandbox
 git config --global credential.helper 'cache --timeout=28800'   # remember the token for 8 hours
 git push -u origin my-first-contribution
 ```
@@ -830,7 +830,7 @@ normal.
 Open your fork on GitHub. A yellow bar says your branch had recent pushes: click
 **Compare & pull request**. Check the arrow says
 
-`nuRiceLab/phlex-india-sandbox: main  ←  <you>/phlex-india-sandbox: my-first-contribution`
+`nuRiceLab/dune-tech-phlex-sandbox: main  ←  <you>/dune-tech-phlex-sandbox: my-first-contribution`
 
 Give it a clear title, fill in the checklist in the description, and click **Create pull request**.
 
@@ -858,9 +858,9 @@ how mistakes get caught before they reach a production run, and how you learn ot
 code. A good review is as valuable as good code.
 
 **First, everyone reviews the same PR.** Find the open PR called **"pls merge"** by
-`gavinsdavies` in https://github.com/nuRiceLab/phlex-india-sandbox/pulls. It has a lot of
+`gavinsdavies` in https://github.com/nuRiceLab/dune-tech-phlex-sandbox/pulls. It has a lot of
 problems, on purpose. Go to **Files changed** and see how many you can find, using the checklist
-in [`contributions/README.md`](https://github.com/nuRiceLab/phlex-india-sandbox/blob/main/contributions/README.md):
+in [`contributions/README.md`](https://github.com/nuRiceLab/dune-tech-phlex-sandbox/blob/main/contributions/README.md):
 
 - Only one folder changed?
 - A README that says what, how to run, and what to expect?
