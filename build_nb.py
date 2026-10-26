@@ -50,8 +50,16 @@ def md(text):
     cells.append(nbf.v4.new_markdown_cell(label_terminal_blocks(text.strip("\n")).replace("\n\n\n", "\n\n")))
 
 
+CATCH_UP_NOTE = ("> ⏭️ **Catch-up: skip this if the commands above worked for you.** Run it only if you "
+                 "fell behind or a step failed. It does the same steps for you.")
+
+
 def code(text):
-    cells.append(nbf.v4.new_code_cell(text.strip("\n")))
+    text = text.strip("\n")
+    first = next((l for l in text.splitlines() if l.strip() and not l.startswith("%%")), "")
+    if first.startswith("# Catch-up"):
+        cells.append(nbf.v4.new_markdown_cell(CATCH_UP_NOTE))
+    cells.append(nbf.v4.new_code_cell(text))
 
 
 def xkcd(num, file, title, caption):
@@ -132,8 +140,10 @@ The line above each box says **where** to type it:
 | 💻 **Terminal, outside the container** | At the `jupyter-you@dune-tech` prompt, before you step in |
 | 💻 **Terminal**, inside or outside | Either works: files, folders and git |
 
-If you fall behind, each step has a **catch-up cell** (a code cell marked `# Catch-up`).
-Running it does the step for you. Use them freely; nobody's marking this.
+**Catch-up cells are only for when you need them.** After each step there's a code cell marked
+`# Catch-up`, under a ⏭️ note. If you typed the commands and they worked, **skip it** and carry on.
+If you fell behind or a step failed, run it: it does the step for you, and then you're level with
+everyone else. Use them freely; nobody's marking this.
 
 Four kinds of box appear throughout:
 
