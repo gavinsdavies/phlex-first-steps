@@ -909,8 +909,9 @@ browser: no token, no password.
 
 1. In JupyterLab, open your `README.md` (in `contributions/<you>/`), select all and copy it.
 2. On GitHub, open **your fork** of `dune-tech-phlex-sandbox` and click into `contributions/`.
-3. **Add file → Create new file**. Name it `<you>/README.md` (typing the `/` makes the folder).
-   Paste your README.
+3. **Add file → Create new file**. Name it `<you>/README.md`, where `<you>` is your **GitHub
+   username, exactly** (typing the `/` makes the folder). Paste your README. The contribution
+   check fails on any other folder name.
 4. **Commit changes…** → choose **Create a new branch for this commit and start a pull request**
    → **Propose changes**. GitHub opens the "Open a pull request" page.
 5. ⚠️ On a fork, GitHub often points that page at **your own fork**. Look at the top bar: it must
