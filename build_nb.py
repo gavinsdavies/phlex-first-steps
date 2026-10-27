@@ -155,6 +155,11 @@ The line above each box says **where** to type it:
 If you fell behind or a step failed, run it: it does the step for you, and then you're level with
 everyone else. Use them freely; nobody's marking this.
 
+**Leave the chatbot closed today, and ask a person.** Phlex is new, so AI models often answer with
+art or LArSoft code, or with functions that don't exist. Most of today's problems are on your own
+screen, where the person next to you can see them. AI tools can help later, once you can check what
+they give you.
+
 Four kinds of box appear throughout:
 
 > 🧭 **Analogy:** a picture from everyday life to hang a new idea on.
