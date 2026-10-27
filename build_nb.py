@@ -116,9 +116,8 @@ The session is a ladder. Climb as high as you can; everyone should reach rung 1.
 | **2** | Built and run Phlex, changed a workflow, committed and pushed it from the terminal |
 | **3** | Added your own C++ algorithm and answered a review with a second commit |
 
-You have a folded **card** on your desk. Write your name and GitHub username on both sides.
-Turn the **? red** side to the front when you're stuck, and a helper will come over. Keep the
-**✓ green** side to the front when you're fine.
+Stuck? Ask your neighbour first, then a helper: raise your hand, or get up and go and talk to
+them. Not a chatbot.
 
 ## The plan
 
@@ -571,9 +570,10 @@ md("""
 > The image was built with **Spack**, the package manager DUNE uses for Phlex and its dependencies
 > (Boost, TBB, ROOT and many more). Spack builds each package from a recipe, in the right order,
 > with matching compilers. That takes hours, which is why it's done once, ahead of time, and
-> packed into an image. If you want to install Phlex on your own laptop later, follow Phlex's
+> packed into an image. The kernel today has **phlex v0.4.1**. If you want to install Phlex on
+> your own laptop later, follow Phlex's
 > [INSTALLATION.md](https://github.com/Framework-R-D/phlex/blob/main/INSTALLATION.md). Ask Kyle
-> or a helper this week.
+> Knoepfel or a helper this week.
 """)
 xkcd(1987, "python_environment", "Python Environment",
      "What your laptop looks like without a package manager. The image saves you from this.")
@@ -600,16 +600,23 @@ Changing the configuration needs no rebuild. That's on purpose.
 
 ## The words you need
 
-You met these in Kyle's lecture. Here they are with a picture each.
+You met these in Kyle Knoepfel's lecture. Here they are with a picture each.
 
 | Phlex term | 🧭 Analogy | Closest art idea |
 |---|---|---|
 | **Layer** | Nested boxes: a job holds spills, a spill holds interactions | Run / SubRun / Event, but you choose the levels |
+| **Data cell** and **family** | One box (spill 3) is a data cell. The same product from every spill (all ten `sum`s) is a family | One event / one product across all events |
 | **Provider** (source) | The loading dock that brings raw material in | Input source |
 | **Transform** | A machine on an assembly line: products in, a new product out | EDProducer |
 | **Observer** | A quality inspector: looks at products, makes nothing new | EDAnalyzer |
-| **Product selector** | A shipping label: who made it, at which layer, what it's called | InputTag |
+| **Product selector** | A shipping label: who made it, at which layer, what it's called. Kyle's slide calls it `product_query`; the v0.4 code you build says `product_selector` | InputTag |
 | **Stage** | A stamp on each product saying which processing pass made it | Process name |
+
+Kyle's key line: **Phlex provides the higher-order functions; you provide the operators.**
+Transform, observe, fold, unfold and filter are the higher-order functions: each says *how* a
+function is applied across a family. Your **algorithm** is the operator, an ordinary function
+such as `add`. In Kyle's "think graphs" picture the higher-order functions are the nodes and the
+products travel along the edges; writing products out is the `preserve` node, which FORM does here.
 
 Phlex builds the assembly line from your configuration and runs as many machines at once as the
 data allow. You don't write any threading code.
@@ -837,6 +844,11 @@ less contributions/<you>/multiply_and_verify.cpp
 Read the `.cpp` file next to `phlex-examples/add_and_verify.cpp`: a **transform** with two inputs and one
 output, and an **observer** that reads the transform's output. The small `CMakeLists.txt` names
 your plugin after your folder, so it's `multiply_<you>` (a `-` in your username becomes `_`).
+
+Notice the split from Kyle's lecture. `int multiply(int i, int j)` is plain C++: it knows nothing
+about Phlex and you could test it on its own. Only `PHLEX_REGISTER_ALGORITHMS` is Phlex code: it
+binds `multiply` to the **transform** higher-order function and says which products go in and
+come out.
 
 Configure again, then build. CMake only looks for folders with a `CMakeLists.txt` when it
 **configures**, so a plain `cmake --build` would skip your new one and there'd be no plugin:
