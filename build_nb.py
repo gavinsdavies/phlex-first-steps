@@ -912,7 +912,11 @@ browser: no token, no password.
 3. **Add file → Create new file**. Name it `<you>/README.md` (typing the `/` makes the folder).
    Paste your README.
 4. **Commit changes…** → choose **Create a new branch for this commit and start a pull request**
-   → **Propose changes**. GitHub opens the pull request page for you: go on to 5.2.
+   → **Propose changes**. GitHub opens the "Open a pull request" page.
+5. ⚠️ On a fork, GitHub often points that page at **your own fork**. Look at the top bar: it must
+   say **base repository: nuRiceLab/dune-tech-phlex-sandbox**, base: `main`. If it shows your
+   fork, click **compare across forks** (or the base repository menu) and pick
+   `nuRiceLab/dune-tech-phlex-sandbox`. Then go on to 5.2.
 
 Changed `my-workflow.jsonnet` too? After the PR is open, go to your new branch on your fork,
 open `contributions/<you>/`, **Add file → Create new file** again, name it `my-workflow.jsonnet`,
@@ -941,6 +945,10 @@ paste it in, and commit **directly to that branch**. The PR picks it up by itsel
 On the pull request page, check the arrow says
 
 `nuRiceLab/dune-tech-phlex-sandbox: main  ←  <you>/dune-tech-phlex-sandbox: <your branch>`
+
+If the left side shows your own fork, change the **base repository** to
+`nuRiceLab/dune-tech-phlex-sandbox`. Or open this page, with your username and branch filled in:
+`https://github.com/nuRiceLab/dune-tech-phlex-sandbox/compare/main...<you>:<your branch>`
 
 Give it a clear title, fill in the checklist in the description, and click **Create pull request**.
 
