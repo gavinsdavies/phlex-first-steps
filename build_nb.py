@@ -980,8 +980,8 @@ comment, and click **Start a review**. When you're done, **Review changes → Co
 Be kind and specific: "This `CMakeCache.txt` is a build product; could you remove it and add it to
 `.gitignore`?" helps. "bad" doesn't.
 
-**Then review a classmate.** Find the PR whose number is **one more than yours** (the newest one
-reviews the oldest). Check it against the list. If it's good, **Approve** it. If something needs
+**Then review a classmate.** The instructor puts up a list of everyone's PRs: review the one
+**after yours** (the last reviews the first; "pls merge" isn't on the list). Check it against the list. If it's good, **Approve** it. If something needs
 fixing, **Request changes** and say what.
 
 ## 5.4 Answer your review
