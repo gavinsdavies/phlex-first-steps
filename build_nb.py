@@ -113,7 +113,7 @@ The session is a ladder. Climb as high as you can; everyone should reach rung 1.
 | Rung | What you'll have done |
 |---|---|
 | **1** | Opened a pull request (in the browser if your terminal gives you trouble) and commented on someone else's |
-| **2** | Built and run Phlex, changed a workflow, committed and pushed it from the terminal |
+| **2** | Built and run Phlex, changed a workflow and committed it from the terminal (pushing it too, if you have a token) |
 | **3** | Added your own C++ algorithm and answered a review with a second commit |
 
 Stuck? Ask your neighbour first, then a helper: raise your hand, or get up and go and talk to
@@ -334,7 +334,7 @@ flowchart LR
     C["<b>your clone</b><br/>~/phlex-work/dune-tech-phlex-sandbox<br/>(on the hub)"]
     U -- "1. Fork (button on GitHub)" --> F
     F -- "2. git clone" --> C
-    C -- "3. git push" --> F
+    C -- "3. git push, or the browser" --> F
     F -- "4. pull request" --> U
 ```
 
@@ -429,7 +429,7 @@ git status --short --branch
 if [ $HAVE_FORK = no ]; then
   echo
   echo "⚠️  No fork at github.com/$ME/dune-tech-phlex-sandbox yet. That's fine for now: the code came"
-  echo "    from the workshop repo. Fork it on GitHub before Part 5, when you push."
+  echo "    from the workshop repo. Fork it on GitHub before Part 5, when you share your work."
 fi
 """)
 
@@ -902,49 +902,55 @@ md("""
 Your commits are in your clone on the hub. Nobody else can see them yet. Two steps make them
 visible: **push** to your fork, then open a **pull request** (PR) to upstream.
 
-## 5.1 Push
+## 5.1 Put your work on GitHub
 
-GitHub needs to know it's you. It doesn't accept your password from the terminal; it wants a
-**personal access token** instead. If you made one before the workshop, use it. If not:
+Your commit so far lives only in your hub home. The simplest way to get it to GitHub is the
+browser: no token, no password.
 
-1. On GitHub: your picture (top right) → **Settings** → **Developer settings** →
-   **Personal access tokens** → **Tokens (classic)** → **Generate new token (classic)**.
-2. Note: `phlex workshop`. Expiration: 7 days. Tick only **public_repo**. Click **Generate**.
-3. Copy the token now (it starts with `ghp_`). GitHub shows it only once. **Never put it in a
-   file in the repository.**
+1. In JupyterLab, open your `README.md` (in `contributions/<you>/`), select all and copy it.
+2. On GitHub, open **your fork** of `dune-tech-phlex-sandbox` and click into `contributions/`.
+3. **Add file → Create new file**. Name it `<you>/README.md` (typing the `/` makes the folder).
+   Paste your README.
+4. **Commit changes…** → choose **Create a new branch for this commit and start a pull request**
+   → **Propose changes**. GitHub opens the pull request page for you: go on to 5.2.
 
-Then:
+Changed `my-workflow.jsonnet` too? After the PR is open, go to your new branch on your fork,
+open `contributions/<you>/`, **Add file → Create new file** again, name it `my-workflow.jsonnet`,
+paste it in, and commit **directly to that branch**. The PR picks it up by itself.
 
-```bash
-cd ~/phlex-work/dune-tech-phlex-sandbox
-git config --global credential.helper 'cache --timeout=28800'   # remember the token for 8 hours
-git push -u origin my-first-contribution
-```
+> 🧗 **Optional: push from the terminal instead.** If you already have a GitHub **personal access
+> token** (or want to make one now), you can push the commit you made in Part 4. GitHub doesn't
+> accept your password from the terminal. To make a token: your picture (top right) →
+> **Settings** → **Developer settings** → **Personal access tokens** → **Tokens (classic)** →
+> **Generate new token (classic)**. Note `phlex workshop`, expiry 7 days, tick only
+> **public_repo**, copy the `ghp_…` token (GitHub shows it once; **never** put it in a file in the
+> repository). Then:
+>
+> ```bash
+> cd ~/phlex-work/dune-tech-phlex-sandbox
+> git config --global credential.helper 'cache --timeout=28800'   # remember the token for 8 hours
+> git push -u origin my-first-contribution
+> ```
+>
+> Username: your GitHub username. Password: **paste the token** (nothing appears; that's normal).
+> Then open your fork: a yellow bar says your branch had recent pushes. Click
+> **Compare & pull request**. If the token fights you for more than five minutes, use the browser.
 
-Username: your GitHub username. Password: **paste the token**. Nothing appears as you paste; that's
-normal.
+## 5.2 Check your pull request
 
-## 5.2 Open the pull request
+On the pull request page, check the arrow says
 
-Open your fork on GitHub. A yellow bar says your branch had recent pushes: click
-**Compare & pull request**. Check the arrow says
-
-`nuRiceLab/dune-tech-phlex-sandbox: main  ←  <you>/dune-tech-phlex-sandbox: my-first-contribution`
+`nuRiceLab/dune-tech-phlex-sandbox: main  ←  <you>/dune-tech-phlex-sandbox: <your branch>`
 
 Give it a clear title, fill in the checklist in the description, and click **Create pull request**.
 
 A **contribution check** runs on your PR and gives it a ✅ or a ❌. A ❌ isn't a disaster: click
-**Details**, read the message, fix it in your branch, commit, and push again.
-
-> **No terminal? Or the push won't work?** Do it in the browser. On your fork, open
-> `contributions/`, click **Add file → Create new file**, name it `<you>/README.md`, write your
-> README, choose **Create a new branch** and click **Propose changes**. GitHub then opens the
-> pull request for you. That's rung 1, and it counts.
+**Details**, read the message, fix the file on the same branch, and commit again.
 """)
 code("""
 %%bash
-# Catch-up: there's no catch-up for pushing; it needs your token.
-# This shows what would be pushed.
+# Catch-up: nothing to run for 5.1; the browser does it.
+# This shows the commit you made in Part 4 (what a terminal push would send).
 cd "$SRC"
 git log --oneline main..HEAD
 git diff --stat main..HEAD
@@ -980,17 +986,15 @@ fixing, **Request changes** and say what.
 
 ## 5.4 Answer your review
 
-If your reviewer asks for a change, **don't** open a new PR. Fix it in the same branch:
+If your reviewer asks for a change, **don't** open a new PR. Fix it on the same branch: on the
+PR page, open **Files changed**, click **⋯ → Edit file** on your file, make the change, and commit
+it **directly to your branch** with a message such as `README: add the expected output`.
 
-```bash
-# edit the file, then:
-git add contributions/<you>
-git commit -m "README: add the expected output"
-git push
-```
+(Pushed from the terminal? Then edit, `git add contributions/<you>`, `git commit -m "…"`,
+`git push`.)
 
 Refresh the PR page: your new commit is there, and the reviewer can see exactly what changed.
-That loop (push, review, fix, push) is how all of Phlex and DUNE software gets written.
+That loop (commit, review, fix, commit) is how all of Phlex and DUNE software gets written.
 """)
 xkcd(1513, "code_quality", "Code Quality",
      "Reviews exist so that this conversation happens before the code is merged, not after.")
